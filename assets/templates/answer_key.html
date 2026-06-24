@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="{{ 'hi' if config.medium == 'Hindi' else 'en' }}">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face {
+    font-family: 'NotoDevanagari';
+    src: url('{{ font_uri }}') format('truetype');
+}
+* { box-sizing: border-box; }
+body {
+    font-family: 'NotoDevanagari', Arial, sans-serif;
+    margin: 0;
+    padding: 18mm 15mm;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #000;
+}
+.header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+.school-name { font-size: 15pt; font-weight: bold; margin-bottom: 3px; }
+.exam-name   { font-size: 12pt; margin-bottom: 6px; }
+.answer-key-label {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #b00;
+    margin-bottom: 6px;
+}
+.meta-table  { width: 100%; border-collapse: collapse; font-size: 10pt; }
+.meta-table td { padding: 2px 6px; }
+.section-header {
+    background: #ebebeb;
+    font-weight: bold;
+    padding: 4px 8px;
+    margin: 14px 0 8px 0;
+    border-left: 4px solid #333;
+    font-size: 10.5pt;
+}
+.answer-row { margin: 6px 0 10px 0; display: flex; gap: 8px; }
+.q-num  { font-weight: bold; min-width: 30px; flex-shrink: 0; }
+.q-body { flex: 1; }
+.question-text { margin-bottom: 2px; }
+.answer-text {
+    background: #f5f5dc;
+    border-left: 3px solid #888;
+    padding: 3px 8px;
+    font-size: 10.5pt;
+}
+</style>
+</head>
+<body>
+<div class="header">
+    <div class="school-name">{{ config.school_name }}</div>
+    <div class="exam-name">{{ config.exam_name }}</div>
+    <div class="answer-key-label">— Answer Key —</div>
+    <table class="meta-table">
+        <tr>
+            <td>Class: {{ config.class_ }}</td>
+            <td>Subject: {{ config.subject }}</td>
+            <td>Date: {{ config.date }}</td>
+        </tr>
+    </table>
+</div>
+
+{% for section in sections %}
+<div class="section-header">
+    Section {{ section.letter }} &mdash; {{ section.marks }} Mark{% if section.marks > 1 %}s{% endif %}
+</div>
+{% for q in section.questions %}
+<div class="answer-row">
+    <span class="q-num">Q{{ q.number }}.</span>
+    <div class="q-body">
+        <div class="question-text">{{ q.text }}</div>
+        <div class="answer-text"><strong>Ans:</strong> {{ q.answer }}</div>
+    </div>
+</div>
+{% endfor %}
+{% endfor %}
+</body>
+</html>
