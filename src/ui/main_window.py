@@ -90,15 +90,19 @@ class MainWindow(QMainWindow):
         html = build_answer_key_html(self._current_sections, self._current_config, font_path)
 
         # Use a temporary off-screen page to render and print the answer key
-        from PyQt6.QtWebEngineCore import QWebEnginePage
+        from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
         self._answer_key_page = QWebEnginePage()
+        self._answer_key_page.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True
+        )
         layout = build_page_layout(
             self._current_config.page_format,
             self._current_config.custom_width_mm,
             self._current_config.custom_height_mm,
         )
         self._answer_key_output = output_path
-        self._answer_key_page.setHtml(html)
+        base_url = QUrl.fromLocalFile(get_asset_path("") + "/")
+        self._answer_key_page.setHtml(html, base_url)
         self._answer_key_page.loadFinished.connect(
             lambda ok: print_to_pdf(self._answer_key_page, output_path, layout)
         )

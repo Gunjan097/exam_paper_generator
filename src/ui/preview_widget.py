@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWebEngineCore import QWebEngineSettings
+from PyQt6.QtCore import pyqtSignal, QUrl
+from src.utils.asset_path import get_asset_path
 
 
 class PreviewWidget(QWidget):
@@ -17,6 +19,9 @@ class PreviewWidget(QWidget):
         layout.setSpacing(4)
 
         self._view = QWebEngineView()
+        self._view.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True
+        )
         layout.addWidget(self._view, 1)
 
         btn_row = QHBoxLayout()
@@ -37,7 +42,8 @@ class PreviewWidget(QWidget):
         layout.addLayout(btn_row)
 
     def show_html(self, html: str) -> None:
-        self._view.setHtml(html)
+        base_url = QUrl.fromLocalFile(get_asset_path("") + "/")
+        self._view.setHtml(html, base_url)
         self._save_paper_btn.setEnabled(True)
         self._save_key_btn.setEnabled(True)
 
